@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_app/model/todo.dart';
@@ -26,15 +26,24 @@ class FirebaseHelper {
     return Firebase.initializeApp();
   }
 
-  // 3
-  // Future<DocumentReference> addPet(Pet pet) {
-  //   return collection.add(pet.toJson());
-  // }
+  Future deleteTodo(String id) async {
+    return databaseReference.runTransaction((Transaction myTransaction) async {
+      myTransaction.delete(collection.doc(id));
+      debugPrint("Todo with id: " + id + " was deleted");
+    });
+  }
 
-  // // 4
-  // updatePet(Pet pet) async {
-  //   await collection
-  //       .document(pet.reference.documentID)
-  //       .updateData(pet.toJson());
-  // }
+  Future insertTodo(Todo todo) async {
+    return databaseReference.runTransaction((Transaction myTransaction) async {
+      myTransaction.set(collection.doc(), todo.toMap());
+      debugPrint("Todo with id: " + collection.doc().id + " was inserted");
+    });
+  }
+
+  Future updateTodo(Todo todo) async {
+    return databaseReference.runTransaction((Transaction myTransaction) async {
+      myTransaction.update(collection.doc(todo.id), todo.toMap());
+      debugPrint("Todo with id: " + todo.id + " was updated");
+    });
+  }
 }

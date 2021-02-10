@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/util/firebaseHelper.dart';
 import 'package:todo_app/model/todo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todo_app/screens/tododetail.dart';
 
 class TodoList extends StatefulWidget {
   @override
@@ -22,7 +23,9 @@ class TodoListState extends State {
     return Scaffold(
       body: todoListItems(),
       floatingActionButton: FloatingActionButton(
-        onPressed: null,
+        onPressed: () {
+          naviagateToDetail(Todo('', '', 3));
+        },
         tooltip: "Add new Todo",
         child: Icon(Icons.add),
       ),
@@ -49,6 +52,7 @@ class TodoListState extends State {
               ),
               onTap: () {
                 debugPrint("Tapped on " + this.todos[position].id);
+                naviagateToDetail(this.todos[position]);
               },
             ),
           );
@@ -84,6 +88,14 @@ class TodoListState extends State {
         break;
       default:
         return Colors.green;
+    }
+  }
+
+  void naviagateToDetail(Todo todo) async {
+    bool result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => TodoDetail(todo)));
+    if (result == true) {
+      getData();
     }
   }
 }
